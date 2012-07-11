@@ -1,0 +1,5 @@
+<document id="error_doc">
+  <title>This document is not well formed XML</title>
+  <p>paragraph <b><i>some text</b>fail here</i></p>
+</document>
+
