@@ -29,16 +29,38 @@
   Restad has been developped by the <a href="http://www.lia.univ-avignon.fr/">Computer Science lab of the university of Avignon.</a>
 
   \section dwnlds Download and install
-  See the <a href="https://sourceforge.net/projects/restad/files/">download page</a>.
+  To download the tool, see the <a href="https://sourceforge.net/projects/restad/files/">download page</a>.
+  See \ref install for details.
 
   \section dvlpers Contribute to the project
-  Restad is opensource and anyone can contribute or fork and edit code to fit to special needs.
+  Restad is open-source and anyone can contribute or fork and edit code to fit to special needs.
   See \ref developers.
 
-  Project website : https://sourceforge.net/projects/restad/
+  Project website : http://restad.sourceforge.net <br/>
+  Project on sourceforge : https://sourceforge.net/projects/restad/
   \author Yoann Moreau (moreau.yo * at * gmail.com)
   \version 0.1.0
 
+  */
+
+/*!
+  \page install Install guide
+
+  \section debian Ubuntu/Debian
+  Restad needs the following packages :
+  \code
+libpq-dev qt4-dev-tools
+  \endcode
+
+  In the root directory, run
+  \code
+qmake CONFIG+=release
+  \endcode
+  then
+  \code
+make
+  \endcode
+  The binary files are procuced in bin directory.
   */
 
 // Code groups, to sort classes in the doc
@@ -66,7 +88,7 @@
   The project has some test units, see \ref tests.
 
   If you want to contribute, you can check \ref todo.
-  The project uses Git. You can browse the code here https://sourceforge.net/p/restad/code/ref/master~/ .
+  The project uses Git. You can browse the code here https://sourceforge.net/p/restad/code/ .
   The classes of the project are grouped in subdirs, which are represented as modules in this doc, see
   <a href="./modules.html">Modules section</a>.
   Here is a raw class diagram used as a draw of the project, not up to date, not true UML but gives an overview of classes.
@@ -79,5 +101,10 @@
   Restad project uses the Qt and CuteTest (https://bitbucket.org/mayastudios/cutetest/overview)
   for testing, you'll need to install both, and specify in test/test.pro the path for CuteTest
   includes and libraries.
+  You will need to compile with qmake CONFIG+=debug CONFIG-=release for the test part.
+
+  To test Restad with a database, a Ruby script is doing the job (test/test_index.rb), it needs the pg gem
+  and an empty database set up with Restad schema. Just pass a restad-config file as argument and run the
+  script into the target directory (i.e. where the Restad bin files are).
 
   */
