@@ -37,7 +37,14 @@ config_str = File.open(config_file, "r").read
 dbhost = config_str.match(/dbhost\s*=\s*((\w)+)/)[1]
 dbname = config_str.match(/dbname\s*=\s*((\w)+)/)[1]
 dbuser = config_str.match(/dbuser\s*=\s*((\w)+)/)[1]
-dbpassword = config_str.match(/dbpassword\s*=\s*((\w)+)/)[1]
+dbpassword = ""
+match_dbpassword = config_str.match(/dbpassword\s*=\s*((\w)+)/)
+dbpassword = match_dbpassword[1] unless match_dbpassword.nil?
+if dbpassword.empty?
+  print "Database password: "
+  dbpassword = STDIN.gets
+  dbpassword.chomp!
+end
 
 db = PGconn.connect("host=#{dbhost} dbname=#{dbname} user=#{dbuser} password=#{dbpassword}")
 
@@ -45,7 +52,7 @@ db = PGconn.connect("host=#{dbhost} dbname=#{dbname} user=#{dbuser} password=#{d
 puts "PREPARSING"
 begin
 # Add the all-in sample file
-  `./preparser -f #{config_file} -m document #{File.expand_path(File.dirname(__FILE__))}/corpus`
+  `./preparser -f #{config_file} -w "#{dbpassword}" -m document #{File.expand_path(File.dirname(__FILE__))}/corpus`
   res = db.exec("SELECT * FROM files WHERE uri LIKE '%all_in_sample.xml'")
   raise "No all_in_sample.xml file in the database" if res.ntuples < 1
   raise "More than 1 result for all_in_sample.xml" if res.ntuples > 1
@@ -54,7 +61,7 @@ begin
   puts "  all_in_sample.xml ok"
 
 # Add the sample files
-  `./preparser -f #{config_file} -r #{File.expand_path(File.dirname(__FILE__))}/corpus/docs`
+  `./preparser -f #{config_file} -w "#{dbpassword}" -r #{File.expand_path(File.dirname(__FILE__))}/corpus/docs`
   res = db.exec("SELECT * FROM files WHERE uri LIKE '%sample1.xml'")
   raise "No sample1.xml file in the database" if res.ntuples < 1
   raise "More than 1 result for sample1.xml" if res.ntuples > 1
@@ -79,7 +86,7 @@ end
 
 puts "INDEXING"
 begin
-  `./indexer -f #{config_file}`
+  `./indexer -f #{config_file} -w "#{dbpassword}" -q`
 # Check the file status
   res = db.exec("SELECT * FROM files WHERE uri LIKE '%all_in_sample.xml'")
   raise "No all_in_sample.xml file in the database" if res.ntuples < 1

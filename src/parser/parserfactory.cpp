@@ -35,7 +35,7 @@ void ParserFactory::initializeTypeCountMap(ParserFactory::TypeCountMap &map)
 
 ////////////////////////////////////////////////////////////////////////////////
 AbstractParser *ParserFactory::newParser(ParserFactory::FileType fileType, IndexingProgress &indexingProgress,
-        DocumentList &documentList, const OptionManager &optionManager, GlobalParserDatabase &globalDatabase)
+        DocumentList &documentList, OptionManager &optionManager, GlobalParserDatabase &globalDatabase)
 {
     if(fileType == XML)
         return new XMLParser(indexingProgress, documentList, optionManager, globalDatabase);

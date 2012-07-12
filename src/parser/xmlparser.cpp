@@ -34,7 +34,7 @@
 #include "xmlparser.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
-XMLParser::XMLParser(IndexingProgress &indexingProgress, DocumentList &documentList, const OptionManager &optionManager,
+XMLParser::XMLParser(IndexingProgress &indexingProgress, DocumentList &documentList, OptionManager &optionManager,
                      GlobalParserDatabase &globalDatabase, TagFilter *tagFilter) :
     AbstractParser(indexingProgress, documentList, optionManager, globalDatabase, tagFilter)
 {

@@ -60,7 +60,7 @@ class AbstractParser : public QRunnable
 public:
     //! Initializes the parser
     /*! \throw DatabaseException if initialization of database fails */
-    AbstractParser(IndexingProgress &indexingProgress, DocumentList &documentList, const OptionManager &optionManager,
+    AbstractParser(IndexingProgress &indexingProgress, DocumentList &documentList, OptionManager &optionManager,
                    GlobalParserDatabase &globalDatabase, TagFilter *tagFilter = 0);
     virtual ~AbstractParser();
 

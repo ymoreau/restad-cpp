@@ -56,7 +56,7 @@ Tag::Tag(int it, const QString &n, int itn, int pi, int op, int so)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-AbstractParser::AbstractParser(IndexingProgress &indexingProgress, DocumentList &documentList, const OptionManager &optionManager,
+AbstractParser::AbstractParser(IndexingProgress &indexingProgress, DocumentList &documentList, OptionManager &optionManager,
                                GlobalParserDatabase &globalDatabase, TagFilter *tagFilter) :
     _indexingProgress(indexingProgress), _documentList(documentList), _dataManager(globalDatabase), _tagFilter(tagFilter)
 {

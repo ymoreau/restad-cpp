@@ -51,7 +51,7 @@ public:
     //! Returns the parser for the given file type
     /*! \throw Exception if file type is unknown or has no parser */
     static AbstractParser *newParser(FileType fileType, IndexingProgress &indexingProgress, DocumentList &documentList,
-                                      const OptionManager &optionManager, GlobalParserDatabase &globalDatabase);
+                                      OptionManager &optionManager, GlobalParserDatabase &globalDatabase);
 
     //! Returns the file type depending on the file extension
     static FileType fileType(const QString &fileName);

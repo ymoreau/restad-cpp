@@ -43,7 +43,7 @@ class XMLParser : public AbstractParser, public QXmlDefaultHandler
 public:
     //! Initializes the parser
     /*! \throw DatabaseException if initialization of database fails */
-    XMLParser(IndexingProgress &indexingProgress, DocumentList &documentList, const OptionManager &optionManager,
+    XMLParser(IndexingProgress &indexingProgress, DocumentList &documentList, OptionManager &optionManager,
               GlobalParserDatabase &globalDatabase, TagFilter *tagFilter = 0);
 
     virtual ~XMLParser();

@@ -71,7 +71,7 @@ public:
 
     //! Configures the database
     /*! \throw DatabaseException From Database::set() */
-    void configureDatabase(const OptionManager &optionManager);
+    void configureDatabase(OptionManager &optionManager);
 
 protected:
     //! Escapes the copy delimiter and newline characters, then quotes the whole string

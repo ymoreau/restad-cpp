@@ -23,7 +23,7 @@
  ******************************************************************************/
 
 #include <QtCore/QRegExp>
-#include <string>
+#include <QtCore/QTextStream>
 #include "../global/optionmanager.hpp"
 
 #include <iostream>
@@ -82,8 +82,17 @@ void Database::set(const QString &host, const QString &dbName, const QString &us
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Database::configureDatabase(const OptionManager &optionManager)
+void Database::configureDatabase(OptionManager &optionManager)
 {
+    QString password = optionManager.optionValue('w').toString();
+    if(password.isEmpty() && !optionManager.isSet('q')) // If no password and no silent-mode
+    {
+        std::cout << "Database password:" << std::flush;
+        QTextStream in(stdin);
+        in >> password;
+        optionManager.setValue('w', password);
+    }
+
     set(optionManager.optionValue('t').toString(),
                  optionManager.optionValue('d').toString(),
                  optionManager.optionValue('u').toString(),
