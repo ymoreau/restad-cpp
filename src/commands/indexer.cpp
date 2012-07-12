@@ -39,6 +39,7 @@ Indexer::Indexer(QCoreApplication &application) :
     Database::configureOptions(_optionManager);
 
     _optionManager.addOption('c', "Max document count to process, default is 1000", Option::Int, "maxdocs-to-process");
+    _optionManager.addOption('p', "Max threads to use, default is all available cores except one", Option::Int, "maxthreads");
 
     _optionManager.parse(_app.arguments());
     if(_optionManager.isSet('h'))
@@ -58,25 +59,6 @@ Indexer::Indexer(QCoreApplication &application) :
 ////////////////////////////////////////////////////////////////////////////////
 void Indexer::run()
 {
-/*
-    // TEST
-    _indexingProgress.initialize(15);
-
-    QThreadPool *threadPool = QThreadPool::globalInstance();
-    QList<AbstractParser*> parsers;
-    for(int i=0; i<threadPool->maxThreadCount(); ++i)
-    {
-        AbstractParser *parser = new AbstractParser(_indexingProgress, _documents, _optionManager, _database, i);
-        parsers.append(parser);
-        threadPool->start(parser);
-    }
-    threadPool->waitForDone();
-    qDebug() << _indexingProgress.errorLog();
-*/
-
-    // ---- TEST
-
-
     int maxDocumentCount = 1000;
     int tmp = _optionManager.optionValue('c').toInt();
     if(tmp != 0)
@@ -89,7 +71,15 @@ void Indexer::run()
 
         QThreadPool *threadPool = QThreadPool::globalInstance();
         QList<AbstractParser*> parsers;
-        for(int i=0; i<threadPool->maxThreadCount(); ++i)
+
+        int maxThreads = threadPool->maxThreadCount();
+        tmp = _optionManager.optionValue('t').toInt();
+        if(tmp > 0 && tmp < maxThreads)
+            maxThreads = tmp;
+        if(_documents.size() < maxThreads)
+            maxThreads = _documents.size();
+
+        for(int i=0; i<maxThreads; ++i)
         {
             AbstractParser *parser = ParserFactory::newParser(_documents.mostWaitingType(), _indexingProgress, _documents, _optionManager, _database);
             parsers.append(parser);
@@ -97,10 +87,10 @@ void Indexer::run()
         }
         threadPool->waitForDone();
 
-        if(!_indexingProgress.errorLog().isEmpty())
+        if(!_indexingProgress.errorLog().isEmpty() && !_optionManager.isSet('q'))
             cerr << _indexingProgress.errorLog().toStdString() << endl;
     }
-    catch(const DatabaseException &e)
+    catch(const Exception &e)
     {
         cerr << e.message().toStdString() << endl;
     }
