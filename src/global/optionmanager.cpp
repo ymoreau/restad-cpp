@@ -131,10 +131,12 @@ QVariant Option::value() const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 OptionManager::OptionManager(QString commandFormat) : _commandFormat(commandFormat)
 {
     addOption('h', "Display help", Option::Flag);
     addOption('v', "Display version", Option::Flag);
+    addOption('q', "Silent mode", Option::Flag);
     addOption('f', "Config file", Option::String);
 }
 
