@@ -122,7 +122,9 @@ DocumentInfo DocumentList::takeDocument(ParserFactory::FileType fileType)
 QList<int> DocumentList::sourceIds() const
 {
     QList<int> ids;
+#if QT_VERSION >= 0x040700
     ids.reserve(_list.size());
+#endif
     foreach(const DocumentInfo &info, _list)
         ids.append(info.sourceId());
     return ids;
