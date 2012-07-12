@@ -8,7 +8,6 @@ include(global.pri)
 CONFIG    += ordered
 TEMPLATE   = subdirs
 
-CONFIG   -= release # will be ignored if building in release
 release {
 CONFIG   -= debug # forces qt to ignore debug build
 }
