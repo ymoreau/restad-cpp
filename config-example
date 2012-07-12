@@ -1,0 +1,5 @@
+# Database config
+dbhost = localhost
+dbname = tests
+dbuser = yoann
+dbencoding = utf-8
