@@ -25,6 +25,7 @@
 #include <QtCore/QRegExp>
 #include <QtCore/QTextStream>
 #include "../global/optionmanager.hpp"
+#include <QDebug>
 
 #include <iostream>
 
@@ -63,11 +64,14 @@ void Database::set(const QString &host, const QString &dbName, const QString &us
 {
     QString parameters;
 
-    QRegExp regex("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$");
-    if(regex.exactMatch(host))
-        parameters += "hostaddr=" + host + " ";
-    else
-        parameters += "host=" + host + " ";
+    if(!host.isEmpty())
+    {
+        QRegExp regex("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$");
+        if(regex.exactMatch(host))
+            parameters += "hostaddr=" + host + " ";
+        else
+            parameters += "host=" + host + " ";
+    }
 
     if(!dbName.isEmpty())
         parameters += "dbname=" + dbName + " ";
@@ -76,7 +80,7 @@ void Database::set(const QString &host, const QString &dbName, const QString &us
     if(!password.isEmpty())
         parameters += "password=" + password + " ";
 
-    _connection = PQconnectdb(parameters.toStdString().c_str());
+    _connection = PQconnectdb(parameters.toAscii().constData());
     if(PQstatus(_connection) != CONNECTION_OK)
         throw DatabaseException(QString("Could not connect to the database '") + dbName + "' : " + PQerrorMessage(_connection));
 }
@@ -87,7 +91,7 @@ void Database::configureDatabase(OptionManager &optionManager)
     QString password = optionManager.optionValue('w').toString();
     if(password.isEmpty() && !optionManager.isSet('q')) // If no password and no silent-mode
     {
-        std::cout << "Database password:" << std::flush;
+        std::cout << "Database password: " << std::flush;
         QTextStream in(stdin);
         in >> password;
         optionManager.setValue('w', password);
@@ -115,6 +119,8 @@ QString &Database::escapeCopyString(QString &string)
 ////////////////////////////////////////////////////////////////////////////////
 QString &Database::escapeString(QString &string)
 {
+    //! \todo use postgresql escape function
+    // Not managing back-slashes
     string.replace("'", "''");
     string.insert(0, '\'');
     string.append('\'');
