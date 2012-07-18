@@ -4,7 +4,7 @@
 #-------------------------------------------------
 
 TEMPLATE = app
-TARGET   = preparser
+TARGET   = restad-preparser
 
 include(../global.pri)
 include(../src.pri)

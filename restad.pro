@@ -9,7 +9,7 @@ CONFIG    += ordered
 TEMPLATE   = subdirs
 
 release {
-CONFIG   -= debug # forces qt to ignore debug build
+CONFIG   -= debug # forces qt to ignore debug build, to ignore tests
 }
 
 debug {
@@ -27,3 +27,13 @@ test.file    = test/test.pro
 }
 
 SOURCES += src/doc-main-page.cpp
+
+release {
+    unix {
+        preparser_install.path  = /usr/bin
+        indexer_install.path    = /usr/bin
+    }
+    preparser_install.files = bin/restad-preparser
+    indexer_install.files   = bin/restad-indexer
+    INSTALLS += preparser_install indexer_install
+}

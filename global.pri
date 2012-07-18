@@ -17,6 +17,12 @@ QT -= gui
 CONFIG  += console
 CONFIG  -= app_bundle
 
-INCLUDEPATH += /usr/include/postgresql
+win32 {
+    INCLUDEPATH += TODO_WINDOWS_LIBPQ_INCLUDE_PATH
+# TODO LIBS += LIBPQ_DLL_PATH ?
+}
+unix {
+    INCLUDEPATH += /usr/include/postgresql
+}
 
 LIBS += -lpq

@@ -4,7 +4,7 @@
 #-------------------------------------------------
 
 TEMPLATE = app
-TARGET   = indexer
+TARGET   = restad-indexer
 
 include(../global.pri)
 include(../src.pri)
