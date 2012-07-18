@@ -45,12 +45,12 @@ Indexer::Indexer(QCoreApplication &application) :
     if(_optionManager.isSet('h'))
     {
         _optionManager.displayHelp();
-        return;
+        exit(0);
     }
     if(_optionManager.isSet('v'))
     {
-        cout << _app.applicationVersion().toStdString();
-        return;
+        cout << _app.applicationVersion().toLocal8Bit().constData() << endl;
+        exit(0);
     }
 
     _database.configureDatabase(_optionManager);
@@ -69,6 +69,13 @@ void Indexer::run()
         _documents = _database.getDocuments(maxDocumentCount);
         _indexingProgress.initialize(_documents.size());
 
+        if(!_optionManager.isSet('q'))
+        {
+            _timer.setInterval(500);
+            connect(&_timer, SIGNAL(timeout()), this, SLOT(refreshProgress()));
+            _timer.start();
+        }
+
         QThreadPool *threadPool = QThreadPool::globalInstance();
         QList<AbstractParser*> parsers;
 
@@ -86,15 +93,24 @@ void Indexer::run()
             threadPool->start(parser);
         }
         threadPool->waitForDone();
+        _timer.stop();
 
         if(!_indexingProgress.errorLog().isEmpty() && !_optionManager.isSet('q'))
-            cerr << _indexingProgress.errorLog().toStdString() << endl;
+            cerr << _indexingProgress.errorLog().toLocal8Bit().constData() << endl;
     }
     catch(const Exception &e)
     {
-        cerr << e.message().toStdString() << endl;
+        if(!_optionManager.isSet('q'))
+            cerr << e.message().toLocal8Bit().constData() << endl;
     }
 
 
     _app.quit();
 }
+
+////////////////////////////////////////////////////////////////////////////////
+void Indexer::refreshProgress() const
+{
+    cout << "\r" << _indexingProgress.status().toLocal8Bit().constData() << flush;
+}
+

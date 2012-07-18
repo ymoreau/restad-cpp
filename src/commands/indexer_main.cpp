@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     }
     catch(const Exception &e)
     {
-        std::cerr << e.message().toStdString() << std::endl;
+        std::cerr << e.message().toLocal8Bit().constData() << std::endl;
         return 1;
     }
     return 0;

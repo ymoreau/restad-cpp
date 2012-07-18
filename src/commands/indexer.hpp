@@ -25,7 +25,8 @@
 #ifndef INDEXER_HPP
 #define INDEXER_HPP
 
-#include <QObject>
+#include <QtCore/QObject>
+#include <QtCore/QTimer>
 class QCoreApplication;
 
 #include "../global/exception.hpp"
@@ -45,9 +46,12 @@ public:
 
 public slots:
     void run();
+private slots:
+    void refreshProgress() const;
 
 private:
     QCoreApplication &_app;
+    QTimer _timer;
     OptionManager _optionManager;
     GlobalParserDatabase _database;
     DocumentList _documents;

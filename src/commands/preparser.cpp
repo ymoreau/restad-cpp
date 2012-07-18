@@ -50,12 +50,12 @@ Preparser::Preparser(QCoreApplication &application) :
     if(_optionManager.isSet('h'))
     {
         _optionManager.displayHelp();
-        return;
+        exit(0);
     }
     if(_optionManager.isSet('v'))
     {
-        cout << _app.applicationVersion().toStdString();
-        return;
+        cout << _app.applicationVersion().toLocal8Bit().constData() << endl;
+        exit(0);
     }
     _dirToExplore = args.at(0);
 
@@ -68,6 +68,7 @@ Preparser::Preparser(QCoreApplication &application) :
 ////////////////////////////////////////////////////////////////////////////////
 void Preparser::run()
 {
+    cerr << "RUN" << endl;
     QStringList files;
     QDir dir(_dirToExplore);
 
@@ -94,10 +95,13 @@ void Preparser::run()
     try
     {
         _database.addDocuments(files, _optionManager.optionValue('m').toString());
+        if(!_optionManager.isSet('q'))
+            cout << files.size() << " file(s) added" << endl;
     }
-    catch(const DatabaseException &e)
+    catch(const Exception &e)
     {
-        cerr << e.message().toStdString() << endl;
+        if(!_optionManager.isSet('q'))
+            cerr << e.message().toLocal8Bit().constData() << endl;
     }
 
     _app.quit();

@@ -316,13 +316,13 @@ QVariant OptionManager::optionValue(const QChar &optionName) const
 ////////////////////////////////////////////////////////////////////////////////
 void OptionManager::displayHelp() const
 {
-    cout << _commandFormat.toStdString() << "\n\n";
+    cout << _commandFormat.toLocal8Bit().constData() << "\n\n";
     foreach(const QChar &key, _optionMap.keys())
     {
         QString valueDescription = _optionMap[key].valueTypeString();
         QString spaces(10 - valueDescription.size(), ' ');
-        cout << "  -" << key.toAscii() << " " << valueDescription.toStdString() << spaces.toStdString()
-                << _optionMap[key].description().toStdString() << "\n";
+        cout << "  -" << key.toAscii() << " " << valueDescription.toLocal8Bit().constData() << spaces.toLocal8Bit().constData()
+                << _optionMap[key].description().toLocal8Bit().constData() << "\n";
     }
     cout << endl;
 }
