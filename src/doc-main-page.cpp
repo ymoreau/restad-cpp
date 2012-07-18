@@ -32,6 +32,19 @@
   To download the tool, see the <a href="https://sourceforge.net/projects/restad/files/">download page</a>.
   See \ref install for details.
 
+  \section uses How to use Restad
+  Restad provides tools to index the documents in the database and SQL functions to query the documents for
+  full-text search on semi-structured data. First you will need to install the tools and set up the database,
+  see \ref install.
+
+  For now, indexing tools only works on local files, that means you need to run the command
+  on the system hosting the files. However the database can be a distant server. See \ref indexing.
+
+  Restad does not provide any interface to query the database because there a lot of good tools to connect to
+  and query a PostgreSQL database. The work is done by the database server, so Restad is how efficient as
+  your PostgreSQL server is, and will always make the most of PostgreSQL updates. See details about
+  database schema and functions in \ref querying.
+
   \section dvlpers Contribute to the project
   Restad is open-source and anyone can contribute or fork and edit code to fit to special needs.
   See \ref developers.
@@ -43,10 +56,17 @@
 
   */
 
+//--------------------------------------------------------------------------------------------------
+// Users doc
+//--------------------------------------------------------------------------------------------------
 /*!
   \page install Install guide
 
-  \section debian Ubuntu/Debian
+  To use Restad you need a <a href="http://wiki.postgresql.org/wiki/Detailed_installation_guides">PostgreSQL</a> server.
+  To compile the Restad commands you will need Qt4 and PostgreSQL libpq C library.
+
+  \section install-commands Install the restad commands
+  \subsection debian Ubuntu/Debian
   Restad needs the following packages :
   \code
 libpq-dev qt4-dev-tools
@@ -54,14 +74,98 @@ libpq-dev qt4-dev-tools
 
   In the root directory, run
   \code
-qmake CONFIG+=release
-  \endcode
-  then
-  \code
+qmake -config release
 make
+sudo make install
   \endcode
-  The binary files are procuced in bin directory.
+  The binary files are procuced in bin directory and installed in /usr/bin.
+
+
+  \section install-database Set up the database
+  <ul>
+    <li><a href="http://www.postgresql.org/docs/8.4/static/sql-createdatabase.html">Create a database</a></li>
+    <li>Set the <a href="http://www.postgresql.org/docs/8.4/static/textsearch.html">full-text</a>
+        <a href="http://www.postgresql.org/docs/8.4/static/textsearch-intro.html#TEXTSEARCH-INTRO-CONFIGURATIONS">configuration</a></li>
+    <li>Create tables using the <b>sql/database.sql</b> file</li>
+    <li>Create functions using the <b>sql/restad.sql</b> file</li>
+  </ul>
+
   */
+
+/*!
+  \page indexing How to index
+  <p><i>command</i> -h will display all available options.<br/>
+  <i>command</i> -v will display the version.</p>
+
+  At first, Restad needs to list the documents in the database. Then it will parse and index the listed
+  files.
+
+  \section options Command options
+  The restad commands can use a config file to read options, using INI format. Options given as command line arguments
+  will overwrite the config file values. See option-parsing for more details.
+
+  Global options of the commands :
+  \verbatim
+-h           Display help
+-v           Display version
+
+-f string    Config file
+
+-q           Silent mode
+
+-d string    Database name
+-t string    Database host name
+-u string    Database user name
+-w string    Database password
+-x string    Database encoding
+  \endverbatim
+
+  The database encoding is used to encode properly the parsed text, and display the database messages
+  in the console.
+
+  \section preparsing Add files to the database
+  This step is called preparsing, the command <b>restad-preparser</b> will list the files and add them
+  to the database. You can specify here if a file contains more than one document by giving the tag
+  surrounding every document.
+
+  %Preparser command format :
+  \verbatim
+preparser [options] path-to-explore
+
+  -e string    Filter by extensions. Example "*.xml *.html"
+  -m string    Document tag for multiple document files (the name of the tag enclosing one document)
+  -r           Recursive listing of the files
+  \endverbatim
+
+  \section indexing Parse and index documents
+  This tool will connect to the database, get back files to process (i.e. file path) and start parsing
+  them using as much threads as it can. Maximum threads number is the number of cores of the system except
+  one, or the maximum number specified with the option <i>-m</i>. It will get 1000 documents by default and
+  process them all before quit. You can specify the number of documents to process with the option <i>-c</i>.
+
+  %Indexer command format :
+  \verbatim
+indexer [options]
+
+  -c int       Max document count to process, default is 1000
+  -p int       Max threads to use, default is all available cores except one
+  \endverbatim
+
+  */
+
+/*!
+  \page querying How to query
+  The SQL functions have not changed (yet) since prototype has been released, you can see the
+  doc here <a href="https://github.com/ymoreau/Restad/wiki/Restad-SQL-functions">Restad-SQL-functions</a>.
+
+  \section db-schema Database schema
+  \image html database.png Database schema
+
+  */
+
+//--------------------------------------------------------------------------------------------------
+// Developpers doc
+//--------------------------------------------------------------------------------------------------
 
 // Code groups, to sort classes in the doc
 /*!

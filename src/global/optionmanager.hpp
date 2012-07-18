@@ -132,7 +132,7 @@ private:
 
 
 /*!
-  \page option-parsing Option parsing
+  \page option-parsing %Option parsing
   \section intro Introduction
   Restad commands accept parameters from command-line or from a config file (INI format). Each parameter
   has a key of one letter, and a unique name (optional). Using the command line, you must specify a
