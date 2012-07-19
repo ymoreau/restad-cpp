@@ -142,8 +142,6 @@ ParserFactory::FileType DocumentList::mostWaitingType() const
     int maxCount = 0;
     ParserFactory::FileType mostWaiting = ParserFactory::Invalid;
 
-    QMutexLocker locker(_mutex);
-
     foreach(ParserFactory::FileType type, _typeCountMap.keys())
     {
         if(_typeCountMap.value(type, -1) > maxCount)
@@ -153,5 +151,20 @@ ParserFactory::FileType DocumentList::mostWaitingType() const
         }
     }
 
+    if(mostWaiting == ParserFactory::Invalid)
+    {
+        throw Exception(QString("DocumentList: No most waiting type found. List size : ") + QString::number(_list.size())
+                        + " ; Count map : " + countMapDebug());
+    }
+
     return mostWaiting;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+QString DocumentList::countMapDebug() const
+{
+    QString mapString;
+    foreach(ParserFactory::FileType type, _typeCountMap.keys())
+        mapString += QString::number((int)type) + "=>" + QString::number(_typeCountMap.value(type)) + " ";
+    return mapString;
 }

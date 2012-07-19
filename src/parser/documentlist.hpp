@@ -81,10 +81,12 @@ public:
     int size() const;
 
     //! Returns the file type which has the highest total of documents in the list
-    /*! Thread-safe. */
+    /*! \throw Exception if no type can be computed, that means empty list or internal counting error */
     ParserFactory::FileType mostWaitingType() const;
 
 private:
+    QString countMapDebug() const;
+
     QMutex *_mutex;
     QList<DocumentInfo> _list;
     ParserFactory::TypeCountMap _typeCountMap;
