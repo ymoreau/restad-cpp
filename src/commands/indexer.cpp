@@ -23,8 +23,9 @@
  ******************************************************************************/
 
 #include <QtCore/QCoreApplication>
-#include <QtCore/QDebug>
 #include <QtCore/QThreadPool>
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
 
 #include <iostream>
 using namespace std;
@@ -35,30 +36,46 @@ using namespace std;
 Indexer::Indexer(QCoreApplication &application) :
     QObject(&application), _app(application)
 {
+    _doRun = true;
     _optionManager.setCommandFormat("indexer [options]");
     Database::configureOptions(_optionManager);
 
     _optionManager.addOption('c', "Max document count to process, default is 1000", Option::Int, "maxdocs-to-process");
     _optionManager.addOption('p', "Max threads to use, default is all available cores except one", Option::Int, "maxthreads");
+    _optionManager.addOption('l', "Loop until there is no more document to process", Option::Flag, "loop-indexing");
+    _optionManager.addOption('o', "Append the parsing error log to a file", Option::String, "log-output-file");
 
     _optionManager.parse(_app.arguments());
     if(_optionManager.isSet('h'))
     {
         _optionManager.displayHelp();
-        exit(0);
+        _doRun = false;
+        return;
     }
     if(_optionManager.isSet('v'))
     {
         cout << _app.applicationVersion().toLocal8Bit().constData() << endl;
-        exit(0);
+        _doRun = false;
+        return;
     }
 
     _database.configureDatabase(_optionManager);
+    _threadPool = QThreadPool::globalInstance();
+
+    _timer.setInterval(500);
+    connect(&_timer, SIGNAL(timeout()), SLOT(update()));
+    _firstLoop = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Indexer::run()
 {
+    if(!_doRun)
+    {
+        _app.quit();
+        return;
+    }
+
     int maxDocumentCount = 1000;
     int tmp = _optionManager.optionValue('c').toInt();
     if(tmp != 0)
@@ -67,19 +84,18 @@ void Indexer::run()
     try
     {
         _documents = _database.getDocuments(maxDocumentCount);
-        _indexingProgress.initialize(_documents.size());
-
-        if(!_optionManager.isSet('q'))
+        if(_documents.size() < 1)
         {
-            _timer.setInterval(500);
-            connect(&_timer, SIGNAL(timeout()), this, SLOT(refreshProgress()));
-            _timer.start();
+            if(_firstLoop && !_optionManager.isSet('q'))
+                cout << "No document to process" << endl;
+
+            QTimer::singleShot(0, this, SLOT(end()));
+            return;
         }
 
-        QThreadPool *threadPool = QThreadPool::globalInstance();
-        QList<AbstractParser*> parsers;
+        _indexingProgress.initialize(_documents.size());
 
-        int maxThreads = threadPool->maxThreadCount();
+        int maxThreads = _threadPool->maxThreadCount();
         tmp = _optionManager.optionValue('t').toInt();
         if(tmp > 0 && tmp < maxThreads)
             maxThreads = tmp;
@@ -89,28 +105,70 @@ void Indexer::run()
         for(int i=0; i<maxThreads; ++i)
         {
             AbstractParser *parser = ParserFactory::newParser(_documents.mostWaitingType(), _indexingProgress, _documents, _optionManager, _database);
-            parsers.append(parser);
-            threadPool->start(parser);
+            _threadPool->start(parser);
         }
-        threadPool->waitForDone();
-        _timer.stop();
 
-        if(!_indexingProgress.errorLog().isEmpty() && !_optionManager.isSet('q'))
-            cerr << _indexingProgress.errorLog().toLocal8Bit().constData() << endl;
+        _timer.start();
     }
     catch(const Exception &e)
     {
         if(!_optionManager.isSet('q'))
             cerr << e.message().toLocal8Bit().constData() << endl;
+        QTimer::singleShot(0, this, SLOT(end()));
     }
-
-
-    _app.quit();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Indexer::refreshProgress() const
+void Indexer::update()
 {
-    cout << "\r" << _indexingProgress.status().toLocal8Bit().constData() << flush;
+    _firstLoop = false;
+
+    if(!_optionManager.isSet('q'))
+        cout << "\r" << _indexingProgress.status().toLocal8Bit().constData() << flush;
+
+    if(_threadPool->activeThreadCount() < 1)
+    {
+        _timer.stop();
+        if(!_optionManager.isSet('q'))
+            cout << endl;
+
+        if(_documents.size() > 0 && !_optionManager.isSet('q'))
+            cerr << endl << "Threads stopped before processing all documents, " << _documents.size() << " left." << endl;
+
+        if(_optionManager.isSet('l'))
+            QTimer::singleShot(0, this, SLOT(run()));
+        else
+            QTimer::singleShot(0, this, SLOT(end()));
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Indexer::end() const
+{
+    if(!_indexingProgress.errorLog().isEmpty())
+    {
+        QString outputFile = _optionManager.optionValue('o').toString();
+        if(!outputFile.isEmpty())
+        {
+            QFile file(outputFile);
+            if(!file.open(QIODevice::Append))
+            {
+                if(!_optionManager.isSet('q'))
+                    cerr << "Can not open the log file '" << outputFile.toAscii().constData() << "'" << endl;
+            }
+            else
+            {
+                QTextStream out(&file);
+                out << _indexingProgress.errorLog() << "\n";
+                file.close();
+            }
+        }
+        else if(/*outputFile.isEmpty() IMPLICIT*/ !_optionManager.isSet('q'))
+        {
+            cerr << _indexingProgress.errorLog().toLocal8Bit().constData() << endl;
+        }
+    }
+
+    _app.quit();
 }
 

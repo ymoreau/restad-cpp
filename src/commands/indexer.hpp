@@ -28,6 +28,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QTimer>
 class QCoreApplication;
+class QThreadPool;
 
 #include "../global/exception.hpp"
 #include "../global/optionmanager.hpp"
@@ -47,11 +48,15 @@ public:
 public slots:
     void run();
 private slots:
-    void refreshProgress() const;
+    void update();
+    void end() const;
 
 private:
     QCoreApplication &_app;
+    bool _doRun;
+    QThreadPool *_threadPool;
     QTimer _timer;
+    bool _firstLoop;
     OptionManager _optionManager;
     GlobalParserDatabase _database;
     DocumentList _documents;
