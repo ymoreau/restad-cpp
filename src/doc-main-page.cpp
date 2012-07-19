@@ -206,8 +206,11 @@ indexer [options]
   \page tests Tests
   Restad project uses the Qt and CuteTest (https://bitbucket.org/mayastudios/cutetest/overview)
   for testing, you'll need to install both, and specify in test/test.pro the path for CuteTest
-  includes and libraries.
-  You will need to compile with qmake CONFIG+=debug CONFIG-=release for the test part.
+  includes and libraries. CuteTest adds some features to QTest, especially grouping tests of different
+  classes in one target and then allow to compile and run once !
+  You will need to compile with qmake -config debug for the test part.
+  Sadly CuteTest seems to be abandoned and there are still some bugs around. You can not use QDebug
+  <b>anywhere</b> in the code called for the test or CuteTest will crash or stay in an infinite Qt's event-loop.
 
   To test Restad with a database, a Ruby script is doing the job (test/test_index.rb), it needs the pg gem
   and an empty database set up with Restad schema. Just pass a restad-config file as argument and run the
