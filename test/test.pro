@@ -10,9 +10,11 @@ include(../global.pri)
 include(../src.pri)
 
 # CuteTest
+unix {
 CUTE_TEST_INC       = /home/yoann/cutetest/include
 CUTE_TEST_LIB_DIR   = /home/yoann/cutetest/lib
 CUTE_TEST_LIB       = CuteTestd
+}
 
 !isEmpty(CUTE_TEST_INC) { INCLUDEPATH += $$CUTE_TEST_INC }
 !isEmpty(CUTE_TEST_LIB_DIR) { LIBS += -L$$CUTE_TEST_LIB_DIR }
@@ -23,7 +25,7 @@ INCLUDEPATH += $$DIR_SRC
 SOURCES += test.cpp
 
 HEADERS += \
-    test_optionmanager.hpp \
     global.hpp \
+    test_optionmanager.hpp \
     test_global.hpp \
     test_commands.hpp

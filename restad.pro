@@ -8,8 +8,14 @@ include(global.pri)
 CONFIG    += ordered
 TEMPLATE   = subdirs
 
-release {
-CONFIG   -= debug # forces qt to ignore debug build, to ignore tests
+# Avoid having debug AND release mode at the same time
+CONFIG(debug, debug|release) {
+CONFIG -= debug release
+CONFIG += debug
+}
+CONFIG(release, debug|release) {
+CONFIG -= debug release
+CONFIG += release
 }
 
 debug {

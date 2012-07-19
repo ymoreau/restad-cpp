@@ -5,6 +5,7 @@
 
 DIR_ROOT    = $$PWD
 DIR_SRC     = $$DIR_ROOT/src
+
 DESTDIR     = $$DIR_ROOT/bin
 OBJECTS_DIR = $$DIR_ROOT/bin
 MOC_DIR     = $$DIR_ROOT/bin
