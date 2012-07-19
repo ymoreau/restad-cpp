@@ -72,18 +72,25 @@ private slots:
         bufferDoc = list.takeDocument(ParserFactory::ODT);
         QVERIFY(!bufferDoc.isValid());
 
-        QCOMPARE(list.mostWaitingType(), ParserFactory::XML);
+        try
+        {
+            QCOMPARE(list.mostWaitingType(), ParserFactory::XML);
 
-        list.addDocument(ParserFactory::ODT, 4, "path");
-        list.addDocument(ParserFactory::ODT, 5, "path");
-        list.addDocument(ParserFactory::ODT, 6, "path");
-        QCOMPARE(list.mostWaitingType(), ParserFactory::ODT);
+            list.addDocument(ParserFactory::ODT, 4, "path");
+            list.addDocument(ParserFactory::ODT, 5, "path");
+            list.addDocument(ParserFactory::ODT, 6, "path");
+            QCOMPARE(list.mostWaitingType(), ParserFactory::ODT);
 
-        bufferDoc = list.takeDocument(ParserFactory::ODT);
-        QVERIFY(bufferDoc.isValid());
-        bufferDoc = list.takeDocument(ParserFactory::ODT);
-        QVERIFY(bufferDoc.isValid());
-        QCOMPARE(list.mostWaitingType(), ParserFactory::XML);
+            bufferDoc = list.takeDocument(ParserFactory::ODT);
+            QVERIFY(bufferDoc.isValid());
+            bufferDoc = list.takeDocument(ParserFactory::ODT);
+            QVERIFY(bufferDoc.isValid());
+            QCOMPARE(list.mostWaitingType(), ParserFactory::XML);
+        }
+        catch(const Exception &e)
+        {
+            QFAIL(e.message().toLocal8Bit().constData());
+        }
     }
 
     void tagfilter()
