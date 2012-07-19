@@ -31,7 +31,6 @@
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 
-#include <iostream>
 #include "global/optionmanager.hpp"
 
 class TESTSUITE(TestOptionManager) TestOptionManager : public QObject
@@ -150,12 +149,6 @@ private slots:
         args << "program-name" << "-b" << "string" << "whatever";
         buffList.clear();
         QVERIFY_THROW(optionManager.parse(args, &buffList, 2), Exception);
-
-        /*
-        QString item;
-        foreach(item, buffList)
-            std::cerr << "  " << item.toStdString() << std::endl;
-            */
     }
     void fileParsing()
     {
