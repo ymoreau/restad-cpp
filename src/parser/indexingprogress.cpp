@@ -45,6 +45,8 @@ void IndexingProgress::initialize(int expectedDocumentCount)
         return;
 
     _expectedDocumentCount = expectedDocumentCount;
+    _currentDocumentCount = 0;
+    _failedDocuments = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
