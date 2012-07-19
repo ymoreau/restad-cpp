@@ -50,6 +50,7 @@ private:
     static QStringList absolutePath(const QFileInfoList &list);
 
     QCoreApplication &_app;
+    bool _doRun;
     OptionManager _optionManager;
     PreparserDatabase _database;
     QString _dirToExplore;

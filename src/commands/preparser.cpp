@@ -26,7 +26,6 @@
 #include <QtCore/QStringList>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
-#include <QtCore/QDebug>
 
 #include <iostream>
 using namespace std;
@@ -37,6 +36,7 @@ using namespace std;
 Preparser::Preparser(QCoreApplication &application) :
     QObject(&application), _app(application)
 {
+    _doRun = true;
     _optionManager.setCommandFormat("preparser [options] path-to-explore");
     Database::configureOptions(_optionManager);
 
@@ -50,12 +50,14 @@ Preparser::Preparser(QCoreApplication &application) :
     if(_optionManager.isSet('h'))
     {
         _optionManager.displayHelp();
-        exit(0);
+        _doRun = false;
+        return;
     }
     if(_optionManager.isSet('v'))
     {
         cout << _app.applicationVersion().toLocal8Bit().constData() << endl;
-        exit(0);
+        _doRun = false;
+        return;
     }
     _dirToExplore = args.at(0);
 
@@ -68,7 +70,12 @@ Preparser::Preparser(QCoreApplication &application) :
 ////////////////////////////////////////////////////////////////////////////////
 void Preparser::run()
 {
-    cerr << "RUN" << endl;
+    if(!_doRun)
+    {
+        _app.quit();
+        return;
+    }
+
     QStringList files;
     QDir dir(_dirToExplore);
 
