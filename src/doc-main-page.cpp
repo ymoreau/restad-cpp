@@ -53,7 +53,7 @@
   Project on sourceforge : https://sourceforge.net/projects/restad <br/>
   See the last news on the blog : https://sourceforge.net/p/restad/blog
 
-  \author Yoann Moreau (moreau.yo * at * gmail.com)
+  \author Yoann Moreau - moreau.yo@gmail.com - <a href="http://ymoreau.users.sourceforge.net/">webpage</a>
   \version 0.1.0
 
   */
