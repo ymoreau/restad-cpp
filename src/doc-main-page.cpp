@@ -50,7 +50,9 @@
   See \ref developers.
 
   Project website : http://restad.sourceforge.net <br/>
-  Project on sourceforge : https://sourceforge.net/projects/restad/
+  Project on sourceforge : https://sourceforge.net/projects/restad <br/>
+  See the last news on the blog : https://sourceforge.net/p/restad/blog
+
   \author Yoann Moreau (moreau.yo * at * gmail.com)
   \version 0.1.0
 
