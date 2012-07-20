@@ -31,6 +31,8 @@
 DataManager::DataManager(GlobalParserDatabase &globalDatabase) :
     _globalDatabase(globalDatabase)
 {
+    _sourceId = 0;
+    _docId = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

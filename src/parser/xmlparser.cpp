@@ -58,24 +58,25 @@ void XMLParser::run()
         QIODevice *dev = AbstractParser::readFile(_currentDocument.uri());
         if(!dev->open(QIODevice::ReadOnly))
         {
-            _indexingProgress.incrementFailedDocument(QString::number(_currentDocument.sourceId())
-                                                      + ": " + _currentDocument.uri() + ": can not open file");
+            _indexingProgress.incrementFailedDocument(QString("idFile[") + QString::number(_currentDocument.sourceId())
+                                                      + "] " + _currentDocument.uri() + ": can not open file");
         }
 
         QXmlInputSource *source = new QXmlInputSource(dev);
 
         try
         {
-            initSource();
+            _docTag = _currentDocument.docSeparator();
 
+            _isParsing = false;
             if(_docTag.isEmpty()) // Not a multiple doc file
                 initDocument();
 
             if(!reader.parse(source))
             {
                 _dataManager.cancelCurrentFile();
-                _indexingProgress.incrementFailedDocument(QString::number(_currentDocument.sourceId())
-                                                          + ": " + _currentDocument.uri() + ": " + _errorMessage);
+                _indexingProgress.incrementFailedDocument(QString("idFile[") + QString::number(_currentDocument.sourceId())
+                                                          + "] " + _currentDocument.uri() + ": " + _errorMessage);
             }
             else
             {
@@ -90,8 +91,8 @@ void XMLParser::run()
         catch(const DatabaseException &e)
         {
             try { _dataManager.cancelCurrentFile(); } catch(const DatabaseException &) {} // Ignore a database error
-            _indexingProgress.incrementFailedDocument(QString::number(_currentDocument.sourceId())
-                                                      + ": " + _currentDocument.uri() + ": " + e.message());
+            _indexingProgress.incrementFailedDocument(QString("idFile[") + QString::number(_currentDocument.sourceId())
+                                                      + "] " + _currentDocument.uri() + ": " + e.message());
         }
 
         delete dev;
@@ -118,8 +119,8 @@ bool XMLParser::startElement(const QString &, const QString &, const QString &qN
         }
         catch(const DatabaseException &e)
         {
-            _indexingProgress.incrementFailedDocument(QString::number(_currentDocument.sourceId())
-                                                      + ": " + _currentDocument.uri() + ": " + e.message());
+            _indexingProgress.incrementFailedDocument(QString("idFile[") + QString::number(_currentDocument.sourceId())
+                                                      + "] " + _currentDocument.uri() + ": " + e.message());
             return false;
         }
     }
@@ -182,7 +183,7 @@ bool XMLParser::endElement(const QString &, const QString &, const QString &qNam
 
     --_depth;
 
-    if(_isParsing && name == _docTag) // End of document
+    if(name == _docTag) // End of document
     {
         _isParsing = false;
 
@@ -192,8 +193,8 @@ bool XMLParser::endElement(const QString &, const QString &, const QString &qNam
         }
         catch(const DatabaseException &e)
         {
-            _indexingProgress.incrementFailedDocument(QString::number(_currentDocument.sourceId())
-                                                      + ": " + _currentDocument.uri() + ": " + e.message());
+            _indexingProgress.incrementFailedDocument(QString("idFile[") + QString::number(_currentDocument.sourceId())
+                                                      + "] " + _currentDocument.uri() + ": " + e.message());
             return false;
         }
     }
@@ -214,7 +215,7 @@ bool XMLParser::characters(const QString &ch)
 ////////////////////////////////////////////////////////////////////////////////
 bool XMLParser::fatalError(const QXmlParseException &exception)
 {
-    _errorMessage = QString::number(exception.lineNumber()) + ": " + exception.message();
+    _errorMessage = QString("line") + QString::number(exception.lineNumber()) + ": " + exception.message();
     return false;
 }
 
@@ -227,8 +228,3 @@ void XMLParser::initDocument()
     _isParsing = true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-void XMLParser::initSource()
-{
-    _docTag = _currentDocument.docSeparator();
-}

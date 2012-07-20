@@ -58,8 +58,6 @@ public:
 
     //! Starts a new document
     void initDocument();
-    //! Starts a new source file
-    void initSource();
 
 private:
     DocumentInfo _currentDocument;
