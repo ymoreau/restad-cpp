@@ -224,6 +224,7 @@ void XMLParser::initDocument()
 {
     _depth = 0;
     _tagStack.clear();
+    _tagNamesCount.clear();
     _dataManager.startDocument(_currentDocument.sourceId());
     _isParsing = true;
 }
