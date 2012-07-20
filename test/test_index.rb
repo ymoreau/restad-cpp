@@ -52,7 +52,7 @@ db = PGconn.connect("host=#{dbhost} dbname=#{dbname} user=#{dbuser} password=#{d
 puts "PREPARSING"
 begin
 # Add the all-in sample file
-  `./preparser -f #{config_file} -w "#{dbpassword}" -m document #{File.expand_path(File.dirname(__FILE__))}/corpus`
+  `./restad-preparser -f #{config_file} -w "#{dbpassword}" -m document #{File.expand_path(File.dirname(__FILE__))}/corpus`
   res = db.exec("SELECT * FROM files WHERE uri LIKE '%all_in_sample.xml'")
   raise "No all_in_sample.xml file in the database" if res.ntuples < 1
   raise "More than 1 result for all_in_sample.xml" if res.ntuples > 1
@@ -61,7 +61,7 @@ begin
   puts "  all_in_sample.xml ok"
 
 # Add the sample files
-  `./preparser -f #{config_file} -w "#{dbpassword}" -r #{File.expand_path(File.dirname(__FILE__))}/corpus/docs`
+  `./restad-preparser -f #{config_file} -w "#{dbpassword}" -r #{File.expand_path(File.dirname(__FILE__))}/corpus/docs`
   res = db.exec("SELECT * FROM files WHERE uri LIKE '%sample1.xml'")
   raise "No sample1.xml file in the database" if res.ntuples < 1
   raise "More than 1 result for sample1.xml" if res.ntuples > 1
@@ -86,7 +86,7 @@ end
 
 puts "INDEXING"
 begin
-  `./indexer -f #{config_file} -w "#{dbpassword}" -q`
+  `./restad-indexer -f #{config_file} -w "#{dbpassword}" -q`
 # Check the file status
   res = db.exec("SELECT * FROM files WHERE uri LIKE '%all_in_sample.xml'")
   raise "No all_in_sample.xml file in the database" if res.ntuples < 1
