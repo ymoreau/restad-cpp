@@ -215,5 +215,6 @@ indexer [options]
   To test Restad with a database, a Ruby script is doing the job (test/test_index.rb), it needs the pg gem
   and an empty database set up with Restad schema. Just pass a restad-config file as argument and run the
   script into the target directory (i.e. where the Restad bin files are).
+  Tested with Ruby 1.9.
 
   */
