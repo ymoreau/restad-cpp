@@ -6,6 +6,7 @@
     <content>
       <summary>This is <b>Restad</b> sample content for <i>all-in</i> xml data.</summary>
       <p>Some text.</p>
+      <french>Caractère spécial €</french>
     </content>
   </document>
   <document id="2">
