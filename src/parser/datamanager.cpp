@@ -66,11 +66,11 @@ void DataManager::flushDocument(bool doValidateSource)
     PQclear(result);
 
     // Send the doc data
-    QString query = "INSERT INTO docs(id_doc,id_file,title,text) VALUES(" + QString::number(_docId) + ","
-            + QString::number(_sourceId) + "," + Database::escapeString(_docTitle)
+    QByteArray query = "INSERT INTO docs(id_doc,id_file,title,text) VALUES(" + QString::number(_docId).toAscii() + ","
+            + QString::number(_sourceId).toAscii() + "," + Database::escapeString(_docTitle)
             + "," + Database::escapeString(_text) + ")";
 
-    result = PQexec(_connection, encodeStringForDatabase(query).constData());
+    result = PQexec(_connection, query.constData());
     if(PQresultStatus(result) != PGRES_COMMAND_OK)
     {
         PQclear(result);

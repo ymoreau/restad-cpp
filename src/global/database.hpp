@@ -78,7 +78,7 @@ protected:
     static QString & escapeCopyString(QString &string);
 
     //! Escapes the string delimiter, then quotes the whole string
-    static QString & escapeString(QString &string);
+    QByteArray escapeString(const QString &string);
 
     //! Encodes a string sent by the database, depending on the database-encoding option
     QString encodeStringFromDatabase(const char *string) const;

@@ -117,14 +117,26 @@ QString &Database::escapeCopyString(QString &string)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-QString &Database::escapeString(QString &string)
+QByteArray Database::escapeString(const QString &string)
 {
-    //! \todo use postgresql escape function
-    // Not managing back-slashes
-    string.replace("'", "''");
-    string.insert(0, '\'');
-    string.append('\'');
-    return string;
+    if(_connection == 0)
+        throw DatabaseException("Database::escapeString : connection is null");
+
+    QByteArray source = encodeStringForDatabase(string);
+    QByteArray dest;
+    // Recommanded by libpq doc : 2*source_size+1
+    dest.resize(2 * source.size() + 1);
+
+    int destSize, error;
+    destSize = PQescapeStringConn(_connection, dest.data(), source.constData(), source.size(), &error);
+    if(error != 0)
+        throw DatabaseException(QString("Could not escape string: ") + encodeStringFromDatabase(PQerrorMessage(_connection)));
+
+    dest.resize(destSize);
+    dest.insert(0, '\'');
+    dest.append('\'');
+
+    return dest;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
