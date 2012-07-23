@@ -112,6 +112,7 @@ void Indexer::run()
     }
     catch(const Exception &e)
     {
+        _timer.stop();
         if(!_optionManager.isSet('q'))
             cerr << e.message().toLocal8Bit().constData() << endl;
         QTimer::singleShot(0, this, SLOT(end()));
