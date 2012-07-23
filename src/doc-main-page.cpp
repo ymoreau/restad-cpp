@@ -145,13 +145,27 @@ preparser [options] path-to-explore
   one, or the maximum number specified with the option <i>-m</i>. It will get 1000 documents by default and
   process them all before quit. You can specify the number of documents to process with the option <i>-c</i>.
 
+  When looping, the indexer will close all threads and get new documents each time it consumes a "block"
+  of documents, which is maximum <i>-c</i>. If you have a lot of file to process (and depending on your RAM)
+  consider using much more than 1000 default value.
+
   %Indexer command format :
   \verbatim
 indexer [options]
 
   -c int       Max document count to process, default is 1000
   -p int       Max threads to use, default is all available cores except one
+  -l           Loop until there is no more document to process
+  -o string    Append the parsing error log to a file
   \endverbatim
+
+  The database keeps the list of files to processed, and processed. If a file get an error of connection during indexing,
+  indexer will try to put back the file to status <i>Waiting</i>, but in case of database connection error
+  it will not be able to do it. You can check files still in <i>Processing</i> where the <i>processing_start</i> date
+  is getting a bit too old or when you have no more indexer running.
+  If a file is not well formed or get an error during parsing, the indexer will set its status to <i>Error</i> to prevent
+  the file to be parsed again (which could lead to infinite loop if using the indexer looping mode). If you change the
+  file content and want it to be parsed again, you can update its status to <i>Waiting</i> and run indexer.
 
   */
 
