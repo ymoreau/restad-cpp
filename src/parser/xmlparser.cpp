@@ -74,7 +74,7 @@ void XMLParser::run()
 
             if(!reader.parse(source))
             {
-                _dataManager.cancelCurrentFile();
+                _dataManager.cancelCurrentFile(true);
                 _indexingProgress.incrementFailedDocument(QString("idFile[") + QString::number(_currentDocument.sourceId())
                                                           + "] " + _currentDocument.uri() + ": " + _errorMessage);
             }

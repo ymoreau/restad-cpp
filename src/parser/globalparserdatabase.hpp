@@ -76,7 +76,7 @@ public:
     //! Update the file status to 'waiting'
     /*! Thread-safe.
         \throw DatabaseException If a connection error occurs */
-    void cancelFile(int idFile);
+    void cancelFile(int idFile, bool toError);
 
 private:
     QMutex *_mutex;

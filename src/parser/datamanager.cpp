@@ -157,12 +157,12 @@ void DataManager::addText(const QString &text)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void DataManager::cancelCurrentFile()
+void DataManager::cancelCurrentFile(bool toError)
 {
     if(_sourceId < 0)
         return;
 
-    _globalDatabase.cancelFile(_sourceId);
+    _globalDatabase.cancelFile(_sourceId, toError);
     _sourceId = -1;
     _docId = -1;
 }

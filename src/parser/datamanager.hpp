@@ -68,8 +68,9 @@ public:
     void addText(const QString &text);
 
     //! Changes the status of the current file
-    /*! \throw DatabaseException If a connection error occurs */
-    void cancelCurrentFile();
+    /*! \throw DatabaseException If a connection error occurs
+        \param toError Set the file to error status instead of waiting status */
+    void cancelCurrentFile(bool toError = false);
 
 //private:
     GlobalParserDatabase &_globalDatabase;

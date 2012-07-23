@@ -243,15 +243,21 @@ int GlobalParserDatabase::attributeNameId(const QString &attributeName)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void GlobalParserDatabase::cancelFile(int idFile)
+void GlobalParserDatabase::cancelFile(int idFile, bool toError)
 {
     QMutexLocker locker(_mutex);
 
     if(_connection == 0)
         throw DatabaseException("DataManager::cancelFile : connection is null");
 
-    QString query = "UPDATE files SET status=" + QString::number(Database::Waiting) + " WHERE id_file=" + QString::number(idFile);
-    PGresult *result = PQexec(_connection, encodeStringForDatabase(query).constData());
+    QString status;
+    if(toError)
+        status = QString::number(Database::Error);
+    else
+        QString::number(Database::Waiting);
+
+    QString query = "UPDATE files SET status=" + status + " WHERE id_file=" + QString::number(idFile);
+    PGresult *result = PQexec(_connection, query.toAscii().constData());
     if(PQresultStatus(result) != PGRES_COMMAND_OK)
     {
         PQclear(result);

@@ -14,7 +14,7 @@ create table files
     primary key(id_file)
 );
 
--- Status : 0 waiting, 1 parsed, 2 processing
+-- Status : 0 waiting, 1 parsed, 2 processing, 3 document error
 -- null doc_tag means file contain only one document
 
 

@@ -51,7 +51,8 @@ public:
     {
         Waiting     = 0, //!< Document hasn't been indexed
         Parsed      = 1, //!< Document has been indexed
-        Processing  = 2 //!< Document is currently being indexed
+        Processing  = 2, //!< Document is currently being indexed
+        Error       = 3  //!< Document can not be indexed because of bad data
     };
 
     //! Configures the option manager for database options (t, d, u, w, x)
