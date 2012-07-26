@@ -68,7 +68,7 @@ void DataManager::flushDocument(bool doValidateSource)
     // Send the doc data
     QByteArray query = "INSERT INTO docs(id_doc,id_file,title,text) VALUES(" + QString::number(_docId).toAscii() + ","
             + QString::number(_sourceId).toAscii() + "," + Database::escapeString(_docTitle)
-            + "," + Database::escapeString(_text) + ")";
+            + ",E" + Database::escapeString(_text) + ")"; // E'text' is for postgresql strings with backslashed chars like newline
 
     result = PQexec(_connection, query.constData());
     if(PQresultStatus(result) != PGRES_COMMAND_OK)
