@@ -80,7 +80,8 @@ qmake -config release
 make
 sudo make install
   \endcode
-  The binary files are procuced in bin directory and installed in /usr/bin.
+  The binary files are procuced in bin directory and installed in /usr/bin. If Restad was already installed,
+  files will not be replaced.
 
 
   \section install-database Set up the database
