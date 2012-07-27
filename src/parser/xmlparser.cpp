@@ -210,8 +210,6 @@ bool XMLParser::characters(const QString &ch)
     if(!_isParsing)
         return true;
 
-    //! \todo manage words separated by a tag only, insert space ?
-
     _dataManager.addText(ch, _insertSpace);
     return true;
 }
