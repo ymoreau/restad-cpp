@@ -22,6 +22,8 @@
  * 
  ******************************************************************************/
 
+#include <QtCore/QRegExp>
+
 #include "../parser/globalparserdatabase.hpp"
 #include "../parser/stringfilters.hpp"
 
@@ -151,8 +153,10 @@ void DataManager::addAttribute(int idTag, const QString &attributeName, QString 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void DataManager::addText(const QString &text)
+void DataManager::addText(const QString &text, bool separate)
 {
+    if(separate && _text.contains(QRegExp(".*\\w$")) && text.contains(QRegExp("^\\w.*")))
+        _text += ' ';
     _text += text;
 }
 

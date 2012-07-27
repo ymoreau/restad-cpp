@@ -26,6 +26,7 @@
 #include <QXmlSimpleReader>
 
 #include "../global/exception.hpp"
+#include "../global/optionmanager.hpp"
 
 #include "../parser/stringfilters.hpp"
 #include "../parser/tagfilter.hpp"
@@ -38,6 +39,7 @@ XMLParser::XMLParser(IndexingProgress &indexingProgress, DocumentList &documentL
                      GlobalParserDatabase &globalDatabase, TagFilter *tagFilter) :
     AbstractParser(indexingProgress, documentList, optionManager, globalDatabase, tagFilter)
 {
+    _insertSpace = !optionManager.isSet('s'); // Option is "do NOT insert space"
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -210,7 +212,7 @@ bool XMLParser::characters(const QString &ch)
 
     //! \todo manage words separated by a tag only, insert space ?
 
-    _dataManager.addText(ch);
+    _dataManager.addText(ch, _insertSpace);
     return true;
 }
 

@@ -65,7 +65,8 @@ public:
     //! Adds attribute data to the buffers
     void addAttribute(int idTag, const QString &attributeName, QString attributeValue);
     //! Adds text to the buffer
-    void addText(const QString &text);
+    /*! \param separate Insert a space if text is going to concatenate two words together */
+    void addText(const QString &text, bool separate = false);
 
     //! Changes the status of the current file
     /*! \throw DatabaseException If a connection error occurs

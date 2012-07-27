@@ -61,6 +61,7 @@ public:
 
 private:
     DocumentInfo _currentDocument;
+    bool _insertSpace;
     bool _isParsing;
     QString _docTag;
     int _depth;

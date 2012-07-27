@@ -44,6 +44,7 @@ Indexer::Indexer(QCoreApplication &application) :
     _optionManager.addOption('p', "Max threads to use, default is all available cores except one", Option::Int, "maxthreads");
     _optionManager.addOption('l', "Loop until there is no more document to process", Option::Flag, "loop-indexing");
     _optionManager.addOption('o', "Append the parsing error log to a file", Option::String, "log-output-file");
+    _optionManager.addOption('s', "Do not insert spaces for concatenated words", Option::Flag, "do-not-separate-concatenated-words");
 
     _optionManager.parse(_app.arguments());
     if(_optionManager.isSet('h'))
