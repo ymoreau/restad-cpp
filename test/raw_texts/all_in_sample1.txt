@@ -1,0 +1,9 @@
+
+    First document
+    restad sample data
+    
+      This is Restad sample content for all-in xml data.
+      Some text.
+      Caractère spécial €
+    
+  

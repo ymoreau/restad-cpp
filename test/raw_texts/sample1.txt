@@ -1,0 +1,10 @@
+
+  First document
+  restad sample data
+  
+    This is Restad sample content for one-file-one-doc xml data.
+    Some text.
+    Caractère spécial €
+  
+
+
