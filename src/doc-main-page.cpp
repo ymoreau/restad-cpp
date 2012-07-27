@@ -54,7 +54,7 @@
   See the last news on the blog : https://sourceforge.net/p/restad/blog
 
   \author Yoann Moreau - moreau.yo@gmail.com - <a href="http://ymoreau.users.sourceforge.net/">webpage</a>
-  \version 0.1.0
+  \version 0.1.1
 
   */
 
@@ -149,6 +149,9 @@ preparser [options] path-to-explore
   of documents, which is maximum <i>-c</i>. If you have a lot of file to process (and depending on your RAM)
   consider using much more than 1000 default value.
 
+  By default, indexer will insert a space to separate two words which would be concatenated when
+  building the without-tag raw text. You can disable this using <i>-s</i>.
+
   %Indexer command format :
   \verbatim
 indexer [options]
@@ -156,6 +159,7 @@ indexer [options]
   -c int       Max document count to process, default is 1000
   -p int       Max threads to use, default is all available cores except one
   -l           Loop until there is no more document to process
+  -s           Do not insert spaces for concatenated words
   -o string    Append the parsing error log to a file
   \endverbatim
 
@@ -228,6 +232,9 @@ indexer [options]
   <b>anywhere</b> in the code called for the test or CuteTest will crash or stay in an infinite Qt's event-loop.
   It is hard to test multithreading or database connection with CuteTest, that's why only a few classes are
   tested right now with those unit tests.
+
+  For unknown reason, the test_commands unit test is not working anymore, it leads CuteTest to
+  stay in an infinite Qt's event-loop. Problem does not occur with the first commited source files...
 
   To test Restad with a database, a Ruby script is doing the job (test/test_index.rb), it needs the pg gem
   and an empty database set up with Restad schema. Just pass a restad-config file as argument and run the
