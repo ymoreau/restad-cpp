@@ -88,6 +88,9 @@ void Database::set(const QString &host, const QString &dbName, const QString &us
 ////////////////////////////////////////////////////////////////////////////////
 void Database::configureDatabase(OptionManager &optionManager)
 {
+    if(optionManager.optionValue('t').toString().isEmpty())
+        std::cerr << "Warning: Database host name is empty" << std::endl;
+
     QString password = optionManager.optionValue('w').toString();
     if(password.isEmpty() && !optionManager.isSet('q')) // If no password and no silent-mode
     {
